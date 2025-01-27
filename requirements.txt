@@ -1,0 +1,5 @@
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+drf-yasg  # For API documentation
+black  # Code formatter
