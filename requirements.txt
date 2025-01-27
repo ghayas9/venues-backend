@@ -1,5 +1,6 @@
-djangorestframework
-djangorestframework-simplejwt
-django-cors-headers
+django  # Web framework
+djangorestframework  # For building REST APIs
+djangorestframework-simplejwt  # For JWT authentication
+django-cors-headers  # For handling Cross-Origin Resource Sharing (CORS)
 drf-yasg  # For API documentation
 black  # Code formatter
