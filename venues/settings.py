@@ -14,10 +14,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = env('SECRET_KEY', default='fallback-secret-key')
 
 # Debug Mode
-DEBUG = env.bool('DEBUG', default=True)
+DEBUG = env.bool('DEBUG', default=False)
 
 # Allowed Hosts
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']  # Adjust this for production (use your Heroku app domain)
 
 # Installed Apps
 INSTALLED_APPS = [
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
 
 # Middleware
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise for static files
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -48,13 +48,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Static Files
+# Static Files Configuration
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Collects all static files here
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,13 +70,15 @@ TEMPLATES = [
     },
 ]
 
-
-# Database
+# Database Configuration
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}"  # Fallback for local dev
     )
 }
+
+# Root URL Configuration
+ROOT_URLCONF = 'venues.urls'
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -87,13 +88,6 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # From environment variables
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # From environment variables
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Venue Booking <your-email@gmail.com>')
-
-
-ROOT_URLCONF = 'venues.urls'
-
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Django-Heroku Settings
 django_heroku.settings(locals())
