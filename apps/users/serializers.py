@@ -1,25 +1,12 @@
-# serializers.py
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.password_validation import validate_password
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User, Role
+from .models import CustomUser
 
-# Custom Token Serializer to Include User Info
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        data['username'] = self.user.username
-        data['role'] = self.user.role.name if self.user.role else None
-        return data
-
-class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    confirm_password = serializers.CharField(write_only=True, required=True)
+class RegisterSerializer(serializers.ModelSerializer):
+    confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'password', 'confirm_password', 'role']
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'password', 'confirm_password', 'role', 'name']
 
     def validate(self, data):
         if data['password'] != data['confirm_password']:
@@ -28,24 +15,24 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('confirm_password')
-        validated_data['password'] = make_password(validated_data['password'])
-        return super().create(validated_data)
+        user = CustomUser.objects.create_user(**validated_data)
+        return user
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False)
+    password = serializers.CharField(write_only=True)
 
 class ForgotPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
+    email = serializers.EmailField()
 
 class ResetPasswordSerializer(serializers.Serializer):
-    token = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True, validators=[validate_password])
-
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = ['id', 'name']
+    email = serializers.EmailField()
+    otp = serializers.IntegerField()
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
 
 class UserSerializer(serializers.ModelSerializer):
-    role = RoleSerializer()
-
     class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'role']
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'role', 'is_approved', 'name']

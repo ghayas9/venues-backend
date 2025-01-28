@@ -106,9 +106,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('apps.users.urls')),  # Users app URLs
+    path('api/v1/users/', include('apps.users.urls')),  # Users app URLs
    #  path('api/bookings/', include('apps.bookings.urls')),  # Bookings app URLs (if used)
-   #  path('api/venues/', include('apps.venues.urls')),  # Venues app URLs (if used)
+    path('api/v1/venues/', include('apps.venues.urls')),  # Venues app URLs (if used)
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

@@ -18,6 +18,25 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import sys
 
+
+
+
+import environ
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env()  # Ensure this line is present to read .env file
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Required in .env
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Required in .env
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Venue Booking <your-email@gmail.com>')
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR))
 
@@ -81,6 +100,7 @@ INSTALLED_APPS = [
     
     # Custom apps
     'apps.users',  # Your users/authentication app
+    'apps.venues',  # Your users/authentication app
 ]
 
 MIDDLEWARE = [
@@ -176,7 +196,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.CustomUser'
+
+
+
+
 
 
 # {
