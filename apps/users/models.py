@@ -1,5 +1,6 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+
 
 class CustomUser(AbstractUser):
     """
@@ -35,6 +36,22 @@ class CustomUser(AbstractUser):
         null=True,
         blank=True,
         help_text="Optional field to store the user's full name."
+    )
+
+    # Resolve reverse accessor conflicts with unique related_name attributes
+    groups = models.ManyToManyField(
+        Group,
+        related_name="customuser_groups",  # Unique related_name
+        blank=True,
+        help_text="The groups this user belongs to.",
+        verbose_name="groups",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="customuser_permissions",  # Unique related_name
+        blank=True,
+        help_text="Specific permissions for this user.",
+        verbose_name="user permissions",
     )
 
     def __str__(self):
