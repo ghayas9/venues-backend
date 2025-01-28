@@ -1,1 +1,1 @@
-web: gunicorn venues.wsgi
+web: gunicorn venues.wsgi 
