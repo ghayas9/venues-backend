@@ -17,8 +17,22 @@ SECRET_KEY = env('SECRET_KEY', default='fallback-secret-key')
 DEBUG = env.bool('DEBUG', default=False)
 
 # Allowed Hosts
-ALLOWED_HOSTS = ['*']  # Adjust this for production (use your Heroku app domain)
-
+# ALLOWED_HOSTS = ['*']  # Adjust this for production (use your Heroku app domain)
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'accept',
+    'x-csrftoken',  # If using CSRF token
+    'authorization',
+]
 # Installed Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
