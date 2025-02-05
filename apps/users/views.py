@@ -216,7 +216,7 @@ def get_all_users(request):
 
 # --------------------- Get User by ID API ---------------------
 @api_view(['GET'])
-@permission_classes([IsSuperAdmin])
+@permission_classes([AllowAny])
 def get_user_by_id(request, user_id):
     """
     API to get details of a specific user by ID.

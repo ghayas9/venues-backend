@@ -11,20 +11,21 @@ class VenueAdmin(admin.ModelAdmin):
 
     # Fields to display in the admin list view
     list_display = [
-        'id', 'name', 'city', 'state', 'capacity', 'hourly_price', 'daily_price',
-        'is_available', 'owner', 'created_at'
+        'id', 'name', 'location', 'capacity', 'price', 'working_hours', 
+        'available_dates', 'is_available', 'owner', 'discount', 'created_at'
     ]
 
     # Fields to filter the list view
-    list_filter = ['city', 'state', 'is_available', 'owner']
+    list_filter = ['location', 'is_available', 'owner', 'discount']
 
     # Fields to search in the admin list view
-    search_fields = ['name', 'city', 'state', 'owner__username']
+    search_fields = ['name', 'location', 'owner__username']
 
     # Fields to display when editing or creating a venue
     fields = [
-        'name', 'address', 'city', 'state', 'zip_code', 'description', 'capacity',
-        'image', 'hourly_price', 'daily_price', 'is_available', 'owner'
+        'name', 'location', 'address', 'description',
+        'capacity', 'working_hours', 'available_dates', 'image', 'price',
+        'is_available', 'discount', 'owner'
     ]
 
     # Read-only fields in the admin panel (cannot be edited)
