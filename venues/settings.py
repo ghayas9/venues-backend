@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'apps.users',
     'apps.venues',
+    'apps.book',
 ]
 
 # Middleware
@@ -62,10 +63,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Enable JWT authentication
+    ),
+}
+
 # Static Files Configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Collects all static files here
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+print(MEDIA_ROOT)
+BASE_URL = "http://localhost:8000"
+DEBUG = True
+
 
 # Templates
 TEMPLATES = [
@@ -102,6 +116,20 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # From environment variables
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # From environment variables
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Venue Booking <your-email@gmail.com>')
+
+
+# --------------------- JWT Configuration ---------------------
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),  # Set the expiration time here (e.g., 12 hours)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Refresh token lifetime (7 days)
+    'ROTATE_REFRESH_TOKENS': False,  # Whether to rotate the refresh token
+    'BLACKLIST_AFTER_ROTATION': True,  # Optional: Blacklist the previous refresh token after rotation
+    'ALGORITHM': 'HS256',  # JWT algorithm (HS256 is default)
+    'SIGNING_KEY': env('SECRET_KEY', default='fallback-secret-key'),  # Use the Django secret key
+}
 
 # Django-Heroku Settings
 django_heroku.settings(locals())
