@@ -65,7 +65,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Enable JWT authentication
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',  # Enable JWT authentication
     ),
 }
 

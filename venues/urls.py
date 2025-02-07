@@ -18,10 +18,21 @@ schema_view = get_schema_view(
     permission_classes=(AllowAny,),
 )
 
+from rest_framework_simplejwt.views import TokenRefreshView
+import logging
+
+logger = logging.getLogger(__name__)
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        logger.info(f"Received refresh token: {request.data.get('refresh')}")
+        return super().post(request, *args, **kwargs)
+    
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/token', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Get access and refresh token
-    path('api/v1/token/refresh', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),  # Refresh access token
+    path('api/v1/token/refresh', CustomTokenRefreshView.as_view(), name='token_refresh'),  # Refresh access token
     path('api/v1/users/', include('apps.users.urls')),  # Users app URLs
     path('api/v1/book/', include('apps.book.urls')),  # Bookings app URLs (if used)
     path('api/v1/venues/', include('apps.venues.urls')),  # Venues app URLs (if used)
@@ -31,3 +42,6 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+

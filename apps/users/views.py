@@ -34,6 +34,43 @@ def register(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# # --------------------- Login with Tokens API ---------------------
+# @login_swagger
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def login_with_tokens(request):
+#     """
+#     API for user login with username or email.
+#     Returns access and refresh tokens along with user details.
+#     """
+#     serializer = LoginSerializer(data=request.data)
+#     if serializer.is_valid():
+#         username = serializer.validated_data.get('username')
+#         email = serializer.validated_data.get('email')
+#         password = serializer.validated_data['password']
+
+#         user = None
+#         if username:
+#             user = CustomUser.objects.filter(username=username).first()
+#         elif email:
+#             user = CustomUser.objects.filter(email=email).first()
+
+#         if user and user.check_password(password):
+#             refresh = RefreshToken.for_user(user)
+#             return Response({
+#                 "refresh": str(refresh),
+#                 "access": str(refresh.access_token),
+#                 "user": {
+#                     "id": user.id,
+#                     "username": user.username,
+#                     "email": user.email,
+#                     "role": user.role,
+#                     "name": user.name
+#                 }
+#             }, status=status.HTTP_200_OK)
+#         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # --------------------- Login with Tokens API ---------------------
 @login_swagger
 @api_view(['POST'])
@@ -48,6 +85,10 @@ def login_with_tokens(request):
         username = serializer.validated_data.get('username')
         email = serializer.validated_data.get('email')
         password = serializer.validated_data['password']
+
+        # Ensure at least one of username or email is provided
+        if not username and not email:
+            return Response({"error": "Either username or email must be provided."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = None
         if username:
@@ -70,6 +111,7 @@ def login_with_tokens(request):
             }, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # --------------------- Forgot Password API ---------------------
