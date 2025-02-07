@@ -107,6 +107,7 @@
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Booking
@@ -122,7 +123,7 @@ from .swagger import (
 
 @list_bookings_swagger
 @api_view(['GET'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def list_bookings(request):
     """
     Admin endpoint to list all bookings.
@@ -139,7 +140,7 @@ def list_bookings(request):
 
 @create_booking_swagger
 @api_view(['POST'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def create_booking(request):
     """
     Admin endpoint to create a new booking.
@@ -154,7 +155,7 @@ def create_booking(request):
 
 @retrieve_booking_swagger
 @api_view(['GET'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def retrieve_booking(request, booking_id):
     """
     Admin endpoint to retrieve details of a specific booking.
@@ -168,7 +169,7 @@ def retrieve_booking(request, booking_id):
 
 @update_booking_swagger
 @api_view(['PUT'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def update_booking(request, booking_id):
     """
     Admin endpoint to update a specific booking.
@@ -185,7 +186,7 @@ def update_booking(request, booking_id):
 
 @delete_booking_swagger
 @api_view(['DELETE'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def delete_booking(request, booking_id):
     """
     Admin endpoint to delete a specific booking.
@@ -200,7 +201,7 @@ def delete_booking(request, booking_id):
 
 @list_bookings_swagger
 @api_view(['GET'])
-@permission_classes([ReadOnly])
+@permission_classes([AllowAny])
 def public_list_bookings(request):
     """
     Public endpoint to list all available bookings.
@@ -213,7 +214,7 @@ def public_list_bookings(request):
 
 @retrieve_booking_swagger
 @api_view(['GET'])
-@permission_classes([ReadOnly])
+@permission_classes([AllowAny])
 def public_retrieve_booking(request, booking_id):
     """
     Public endpoint to retrieve details of a specific booking.

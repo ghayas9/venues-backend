@@ -111,6 +111,7 @@
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
@@ -145,7 +146,7 @@ def list_admin_venues(request):
 
 @create_venue_swagger
 @api_view(['POST'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def create_venue(request):
     """
     Admin endpoint to create a new venue.
@@ -159,7 +160,7 @@ def create_venue(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAdminOrSuperAdmin])
+@permission_classes([AllowAny])
 def manage_venue(request, venue_id):
     """
     Admin endpoint to retrieve, update, or delete a specific venue owned by the logged-in admin user.
@@ -198,7 +199,7 @@ def manage_venue(request, venue_id):
 
 @list_public_venues_swagger
 @api_view(['GET'])
-@permission_classes([ReadOnly])
+@permission_classes([AllowAny])
 def list_public_venues(request):
     """
     Public endpoint to list all available venues.
@@ -212,7 +213,7 @@ def list_public_venues(request):
 
 @retrieve_public_venue_swagger
 @api_view(['GET'])
-@permission_classes([ReadOnly])
+@permission_classes([AllowAny])
 def retrieve_public_venue(request, venue_id):
     """
     Public endpoint to retrieve details of a specific venue.

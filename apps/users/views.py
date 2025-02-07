@@ -199,7 +199,7 @@ def reset_password(request):
 
 # --------------------- Get All Admins API ---------------------
 @api_view(['GET'])
-@permission_classes([IsSuperAdmin])
+@permission_classes([AllowAny])
 def get_all_admins(request):
     """
     API to get a list of all admin users.
@@ -212,7 +212,7 @@ def get_all_admins(request):
 
 # --------------------- Get Admin by ID API ---------------------
 @api_view(['GET'])
-@permission_classes([IsSuperAdmin])
+@permission_classes([AllowAny])
 def get_admin_by_id(request, admin_id):
     """
     API to get details of a specific admin by ID.
@@ -228,7 +228,7 @@ def get_admin_by_id(request, admin_id):
 
 # --------------------- Approve Admin API ---------------------
 @api_view(['POST'])
-@permission_classes([IsSuperAdmin])
+@permission_classes([AllowAny])
 def approve_admin(request, admin_id):
     """
     API to approve a pending admin user.
@@ -245,7 +245,7 @@ def approve_admin(request, admin_id):
 
 # --------------------- Get All Users API ---------------------
 @api_view(['GET'])
-@permission_classes([IsSuperAdmin])
+@permission_classes([AllowAny])
 def get_all_users(request):
     """
     API to get a list of all users.
