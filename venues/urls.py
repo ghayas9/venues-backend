@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/v1/users/', include('apps.users.urls')),  # Users app URLs
     path('api/v1/book/', include('apps.book.urls')),  # Bookings app URLs (if used)
     path('api/v1/venues/', include('apps.venues.urls')),  # Venues app URLs (if used)
+     path('api/v1/dashboard/', include('apps.dashboard.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc')
 ]
