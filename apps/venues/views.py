@@ -146,7 +146,7 @@ def list_admin_venues(request):
 
 @create_venue_swagger
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminOrSuperAdmin])
 def create_venue(request):
     """
     Admin endpoint to create a new venue.
