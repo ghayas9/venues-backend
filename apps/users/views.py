@@ -157,13 +157,13 @@ def verify_otp(request):
     otp = request.data.get('otp')
 
     if not email or not otp:
-        return Response({"error": "Email and OTP are required."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Email and OTP are required."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         user = CustomUser.objects.get(email=email, otp=otp)
         return Response({"message": "OTP verified successfully."}, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
-        return Response({"error": "Invalid OTP or email."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "Invalid OTP or email."}, status=status.HTTP_404_NOT_FOUND)
 
 
 # --------------------- Reset Password API ---------------------

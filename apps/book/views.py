@@ -107,7 +107,7 @@
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Booking
@@ -123,24 +123,33 @@ from .swagger import (
 
 @list_bookings_swagger
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def list_bookings(request):
     """
     Admin endpoint to list all bookings.
+    - Customer: Can see all bookings for their own booking.
     - Admins: Can see all bookings for their own venues.
     - Super Admins: Can see all bookings across all venues and users.
     """
+    # If user is super admin, return all bookings
     if request.user.role == 'super_admin':
-        bookings = Booking.objects.all()  # Super admin can see all bookings
+        bookings = Booking.objects.all()
+    # If user is an admin, return bookings for their venues
+    elif request.user.role == 'admin':
+        bookings = Booking.objects.filter(venue__owner=request.user)
+    # If user is a customer, return only their bookings
+    elif request.user.role == 'customer':
+        bookings = Booking.objects.filter(user=request.user)
     else:
-        bookings = Booking.objects.filter(venue__owner=request.user)  # Admins can see only their own bookings
+        return Response({"message": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+    # Serialize the bookings data and return response
     serializer = BookingSerializer(bookings, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @create_booking_swagger
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def create_booking(request):
     """
     Admin endpoint to create a new booking.
@@ -148,14 +157,14 @@ def create_booking(request):
     """
     serializer = BookingCreateUpdateSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(user=request.user)  # Assign the logged-in user as the user for the booking
+        serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @retrieve_booking_swagger
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def retrieve_booking(request, booking_id):
     """
     Admin endpoint to retrieve details of a specific booking.
@@ -169,7 +178,7 @@ def retrieve_booking(request, booking_id):
 
 @update_booking_swagger
 @api_view(['PUT'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminOrSuperAdmin])
 def update_booking(request, booking_id):
     """
     Admin endpoint to update a specific booking.
@@ -186,7 +195,7 @@ def update_booking(request, booking_id):
 
 @delete_booking_swagger
 @api_view(['DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminOrSuperAdmin])
 def delete_booking(request, booking_id):
     """
     Admin endpoint to delete a specific booking.
@@ -201,20 +210,20 @@ def delete_booking(request, booking_id):
 
 @list_bookings_swagger
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def public_list_bookings(request):
     """
     Public endpoint to list all available bookings.
     - No authentication required.
     """
-    bookings = Booking.objects.filter(status='confirmed')  # Only show confirmed bookings
+    bookings = Booking.objects.filter(status='confirmed')
     serializer = BookingSerializer(bookings, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @retrieve_booking_swagger
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def public_retrieve_booking(request, booking_id):
     """
     Public endpoint to retrieve details of a specific booking.

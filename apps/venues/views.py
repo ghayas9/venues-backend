@@ -160,7 +160,7 @@ def create_venue(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminOrSuperAdmin])
 def manage_venue(request, venue_id):
     """
     Admin endpoint to retrieve, update, or delete a specific venue owned by the logged-in admin user.
