@@ -80,8 +80,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 print(MEDIA_ROOT)
-# BASE_URL = "https://api-venues-c87122e89321.herokuapp.com"
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://api-venues-c87122e89321.herokuapp.com"
+# BASE_URL = "http://localhost:8000"
 DEBUG = True
 
 
