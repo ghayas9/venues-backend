@@ -123,7 +123,7 @@ from .swagger import (
 
 @list_bookings_swagger
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminOrSuperAdmin])
 def list_bookings(request):
     """
     Admin endpoint to list all bookings.
@@ -186,7 +186,7 @@ def update_booking(request, booking_id):
     - Super Admins: Can manage all bookings.
     """
     booking = get_object_or_404(Booking, id=booking_id)
-    serializer = BookingCreateUpdateSerializer(booking, data=request.data)
+    serializer = BookingCreateUpdateSerializer(booking, data=request.data,partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

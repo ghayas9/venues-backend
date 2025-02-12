@@ -9,7 +9,7 @@ def auto_approve_admin(sender, instance, created, **kwargs):
     Automatically approves admin users if certain conditions are met.
     This is an example signal handler triggered after saving a CustomUser.
     """
-    if created and instance.role == 'admin':
+    if created and instance.role == 'super_admin':
         # For example, you might auto-approve based on specific criteria
-        instance.is_approved = False  # Default behavior: admin approval required
+        instance.status = 'active' 
         instance.save()

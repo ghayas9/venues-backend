@@ -8,11 +8,16 @@ class CustomUser(AbstractUser):
     for our application's user management needs.
     """
 
-    # Choices for the user's role in the system
     ROLE_CHOICES = [
         ('customer', 'Customer'),  # Regular customer
         ('admin', 'Admin'),        # Venue administrator
         ('super_admin', 'Super Admin'),  # Platform super admin
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('active', 'Active'),
+        ('blocked', 'Blocked')
     ]
 
     # Custom fields
@@ -22,10 +27,14 @@ class CustomUser(AbstractUser):
         default='customer',
         help_text="Defines the role of the user: Customer, Admin, or Super Admin."
     )
-    is_approved = models.BooleanField(
-        default=False,
-        help_text="Indicates whether the admin has been approved by a super admin."
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        help_text="Defines the status of the user: Pending, Active, or Block."
     )
+
     otp = models.IntegerField(
         null=True,
         blank=True,
@@ -38,17 +47,23 @@ class CustomUser(AbstractUser):
         help_text="Optional field to store the user's full name."
     )
 
-    # Resolve reverse accessor conflicts with unique related_name attributes
+    image = models.ImageField(
+        upload_to='profile/',
+        null=True,
+        blank=True,
+        help_text="Profile picture of the user."
+    )
+
     groups = models.ManyToManyField(
         Group,
-        related_name="customuser_groups",  # Unique related_name
+        related_name="customuser_groups", 
         blank=True,
         help_text="The groups this user belongs to.",
         verbose_name="groups",
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name="customuser_permissions",  # Unique related_name
+        related_name="customuser_permissions",
         blank=True,
         help_text="Specific permissions for this user.",
         verbose_name="user permissions",
@@ -77,3 +92,4 @@ class CustomUser(AbstractUser):
             # If username is not provided, use the email as the username
             self.username = self.email
         super().save(*args, **kwargs)
+

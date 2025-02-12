@@ -8,7 +8,7 @@ from django.conf import settings
 from .models import CustomUser
 from .serializers import (
     RegisterSerializer, LoginSerializer, ForgotPasswordSerializer,
-    ResetPasswordSerializer, UserSerializer
+    ResetPasswordSerializer, UserSerializer ,UpdateStatusUserSerializer
 )
 from .permissions import IsSuperAdmin
 import random
@@ -33,44 +33,6 @@ def register(request):
         return Response({"message": "register successfully"}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# # --------------------- Login with Tokens API ---------------------
-# @login_swagger
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def login_with_tokens(request):
-#     """
-#     API for user login with username or email.
-#     Returns access and refresh tokens along with user details.
-#     """
-#     serializer = LoginSerializer(data=request.data)
-#     if serializer.is_valid():
-#         username = serializer.validated_data.get('username')
-#         email = serializer.validated_data.get('email')
-#         password = serializer.validated_data['password']
-
-#         user = None
-#         if username:
-#             user = CustomUser.objects.filter(username=username).first()
-#         elif email:
-#             user = CustomUser.objects.filter(email=email).first()
-
-#         if user and user.check_password(password):
-#             refresh = RefreshToken.for_user(user)
-#             return Response({
-#                 "refresh": str(refresh),
-#                 "access": str(refresh.access_token),
-#                 "user": {
-#                     "id": user.id,
-#                     "username": user.username,
-#                     "email": user.email,
-#                     "role": user.role,
-#                     "name": user.name
-#                 }
-#             }, status=status.HTTP_200_OK)
-#         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 # --------------------- Login with Tokens API ---------------------
 @login_swagger
 @api_view(['POST'])
@@ -88,7 +50,7 @@ def login_with_tokens(request):
 
         # Ensure at least one of username or email is provided
         if not username and not email:
-            return Response({"error": "Either username or email must be provided."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Either username or email must be provided."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = None
         if username:
@@ -96,7 +58,7 @@ def login_with_tokens(request):
         elif email:
             user = CustomUser.objects.filter(email=email).first()
 
-        if user and user.check_password(password):
+        if user and user.check_password(password) and user.status =='active':
             refresh = RefreshToken.for_user(user)
             return Response({
                 "refresh": str(refresh),
@@ -109,7 +71,7 @@ def login_with_tokens(request):
                     "name": user.name
                 }
             }, status=status.HTTP_200_OK)
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message": "Invalid credentials or unactive"}, status=status.HTTP_401_UNAUTHORIZED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -227,7 +189,7 @@ def get_admin_by_id(request, admin_id):
 
 
 # --------------------- Approve Admin API ---------------------
-@api_view(['POST'])
+@api_view(['PUT'])
 @permission_classes([AllowAny])
 def approve_admin(request, admin_id):
     """
@@ -235,12 +197,15 @@ def approve_admin(request, admin_id):
     Accessible only by super admins.
     """
     try:
-        admin = CustomUser.objects.get(id=admin_id, role='admin', is_approved=False)
-        admin.is_approved = True
-        admin.save()
-        return Response({"message": "Admin approved."})
+        user = CustomUser.objects.get(id=admin_id)
     except CustomUser.DoesNotExist:
-        return Response({"error": "Admin not found or already approved."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UpdateStatusUserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Status updated successfully."}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # --------------------- Get All Users API ---------------------
