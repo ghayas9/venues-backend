@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
-
 class CustomUser(AbstractUser):
     """
     CustomUser model extends Django's AbstractUser to add custom fields 
@@ -54,6 +53,15 @@ class CustomUser(AbstractUser):
         help_text="Profile picture of the user."
     )
 
+    # Ensure uniqueness of email
+    email = models.EmailField(
+        unique=True,  # Enforce unique constraint
+        max_length=255,
+        blank=False,
+        null=False,
+        help_text="The email address of the user (used for authentication)."
+    )
+
     groups = models.ManyToManyField(
         Group,
         related_name="customuser_groups", 
@@ -92,4 +100,3 @@ class CustomUser(AbstractUser):
             # If username is not provided, use the email as the username
             self.username = self.email
         super().save(*args, **kwargs)
-
