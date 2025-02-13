@@ -58,7 +58,7 @@ def login_with_tokens(request):
         elif email:
             user = CustomUser.objects.filter(email=email).first()
 
-        if user and user.check_password(password) and user.status =='active':
+        if user and user.check_password(password) and user.status !='blocked':
             refresh = RefreshToken.for_user(user)
             return Response({
                 "refresh": str(refresh),
